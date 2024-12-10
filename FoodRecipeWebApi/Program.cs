@@ -1,8 +1,18 @@
+using Autofac.Extensions.DependencyInjection;
+using Autofac;
+using FoodRecipeWebApi.Config;
 using FoodRecipeWebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Autofac
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(container =>
+{
+    container.RegisterModule(new AutofacModule());
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
