@@ -29,19 +29,23 @@ public class Repository<Entity> : IRepository<Entity> where Entity : BaseModel
         return GetAll().Where(expression);
     }
 
-    public async Task<Entity?> GetByID(string id)
+    public async Task<Entity?> GetByID(int id)
     {
         return await GetByCondition(x => x.ID == id).FirstOrDefaultAsync();
     }
 
-    public bool CheckExistsByID(string id)
+    public bool CheckByConidition(Expression<Func<Entity, bool>> expression)
     {
-        return _entities.Any(x => x.ID == id);
+        return GetAll().Any(expression);
+    }
+
+    public bool CheckExistsByID(int id)
+    {
+        return CheckByConidition(x => x.ID == id);
     }
 
     public void Add(Entity entity)
     {
-        entity.ID = string.IsNullOrEmpty(entity.ID) ? Guid.NewGuid().ToString() : entity.ID;
         entity.CreatedDate = DateTime.Now;
 
         _entities.Add(entity);
@@ -51,7 +55,6 @@ public class Repository<Entity> : IRepository<Entity> where Entity : BaseModel
     {
         foreach (var entity in entities)
         {
-            entity.ID = string.IsNullOrEmpty(entity.ID) ? Guid.NewGuid().ToString() : entity.ID;
             entity.CreatedDate = DateTime.Now;
         }
 
