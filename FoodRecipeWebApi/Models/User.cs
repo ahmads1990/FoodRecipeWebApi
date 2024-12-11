@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-
-namespace FoodRecipeWebApi.Models;
+﻿namespace FoodRecipeWebApi.Models;
 
 public class User : BaseModel
 {

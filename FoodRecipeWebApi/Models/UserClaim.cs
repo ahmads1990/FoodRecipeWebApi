@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
-namespace FoodRecipeWebApi.Models;
+﻿namespace FoodRecipeWebApi.Models;
 
 public class UserClaim : BaseModel
 {

@@ -2,8 +2,6 @@
 using FoodRecipeWebApi.Helpers.Config;
 using FoodRecipeWebApi.Models;
 using FoodRecipeWebApi.ViewModels.Auth;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -29,16 +27,16 @@ public class AuthService : IAuthService
     {
         AuthViewModel authDto = new AuthViewModel();
         // return if email doesn't exist OR email+password don't match
-        var user =  _userRepo.GetByCondition(u => u.Email.Equals(loginViewModel.Email)).FirstOrDefault();
+        var user = _userRepo.GetByCondition(u => u.Email.Equals(loginViewModel.Email)).FirstOrDefault();
 
-        if (user is null || !_userRepo.CheckByConidition(u=>u.Password.Equals(loginViewModel.Password)))
+        if (user is null || !_userRepo.CheckByConidition(u => u.Password.Equals(loginViewModel.Password)))
         {
             authDto.Message = "Email or Password is incorrect!";
             return authDto;
         }
 
         var jwtToken = await CreateJwtTokenAsync(user);
-        var claims =  _UserClaimRepo.GetByCondition(c => c.UserId == user.ID);
+        var claims = _UserClaimRepo.GetByCondition(c => c.UserId == user.ID);
 
         authDto.IsAuthenticated = true;
         authDto.UserID = user.ID;
@@ -65,7 +63,7 @@ public class AuthService : IAuthService
                 new UserClaim("uid", user.ID.ToString())
         };
         // merge both claims lists and jwtClaims to allClaims
-        var allClaims = jwtClaims.Union(userClaims).Select(c=>new Claim(c.Type, c.Value));
+        var allClaims = jwtClaims.Union(userClaims).Select(c => new Claim(c.Type, c.Value));
 
         // specify the signing key and algorithm
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.Key));

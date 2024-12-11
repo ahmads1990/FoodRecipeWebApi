@@ -1,12 +1,12 @@
-using Autofac.Extensions.DependencyInjection;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using FoodRecipeWebApi.Config;
 using FoodRecipeWebApi.Data;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 using FoodRecipeWebApi.Helpers.Config;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
