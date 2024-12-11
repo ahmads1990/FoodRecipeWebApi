@@ -1,4 +1,5 @@
 ﻿using FoodRecipeWebApi.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 namespace FoodRecipeWebApi.Data.Repo;
 
@@ -18,4 +19,6 @@ public interface IRepository<Entity> where Entity : BaseModel
     void SoftDelete(Entity entity);
     void SaveChanges();
     Task SaveChangesAsync();
+    public bool IsFound(int id);
+
 }

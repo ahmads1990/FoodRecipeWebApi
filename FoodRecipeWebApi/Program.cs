@@ -4,6 +4,8 @@ using FoodRecipeWebApi.Config;
 using FoodRecipeWebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using FoodRecipeWebApi.Services;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +34,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 var app = builder.Build();
-
+AutoMapperServices.Mapper = app.Services.GetRequiredService<IMapper>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -43,7 +45,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();
