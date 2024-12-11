@@ -1,8 +1,11 @@
-using Autofac.Extensions.DependencyInjection;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using FoodRecipeWebApi.Config;
 using FoodRecipeWebApi.Data;
+using FoodRecipeWebApi.Helpers.Config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using FoodRecipeWebApi.Services;
 using AutoMapper;
@@ -33,6 +36,31 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         .EnableSensitiveDataLogging();
 });
 
+// Security
+// configure jwt helper class to use jwt config info
+builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("Jwt"));
+// Add Authentication with jwt config
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(o =>
+{
+    o.RequireHttpsMetadata = false;
+    o.SaveToken = false;
+    o.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "Random key")),
+    };
+});
+
 var app = builder.Build();
 AutoMapperServices.Mapper = app.Services.GetRequiredService<IMapper>();
 // Configure the HTTP request pipeline.
@@ -44,6 +72,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();

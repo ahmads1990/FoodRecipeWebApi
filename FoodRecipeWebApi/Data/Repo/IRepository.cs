@@ -8,8 +8,9 @@ public interface IRepository<Entity> where Entity : BaseModel
     IQueryable<Entity> GetAll();
     IQueryable<Entity> GetAllWithoutDeleted();
     IQueryable<Entity> GetByCondition(Expression<Func<Entity, bool>> expression);
-    Task<Entity?> GetByID(string id);
-    bool CheckExistsByID(string id);
+    Task<Entity?> GetByID(int id);
+    bool CheckByConidition(Expression<Func<Entity, bool>> expression);
+    bool CheckExistsByID(int id);
     void Add(Entity entity);
     IEnumerable<Entity> AddRange(IEnumerable<Entity> entities);
     void Update(Entity entity);
