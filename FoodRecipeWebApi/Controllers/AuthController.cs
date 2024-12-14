@@ -1,6 +1,7 @@
 ﻿using FoodRecipeWebApi.Services.Auth;
 using FoodRecipeWebApi.ViewModels.Auth;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace FoodRecipeWebApi.Controllers;
 
@@ -25,5 +26,21 @@ public class AuthController : ControllerBase
 
         //Todo send confirmation mail
         return Ok(result);
+    }
+
+
+    [HttpPost]
+    public async Task<IActionResult> Register(RegisterRequest request ,CancellationToken cancellationToken)
+    {
+        try
+        {
+
+            await _authService.RegisterAsync(request, cancellationToken);
+            return Ok(new { message = "User registered successfully." });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
     }
 }

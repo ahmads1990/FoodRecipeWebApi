@@ -2,6 +2,7 @@
 using FoodRecipeWebApi.Helpers.Config;
 using FoodRecipeWebApi.Models;
 using FoodRecipeWebApi.ViewModels.Auth;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -48,6 +49,22 @@ public class AuthService : IAuthService
 
         return authDto;
     }
+
+    public async Task RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
+    {
+        var emailIsExist = _userRepo.CheckByConidition(x=> x.Email == request.Email);
+        if (emailIsExist)
+            throw new InvalidOperationException("Email is already registered.");
+
+        var passwordHasher = new PasswordHasher<User>();
+        var user = request.Map<User>();
+        user.Password = passwordHasher.HashPassword(user,request.Password);
+         _userRepo.Add(user);
+        await _userRepo.SaveChangesAsync();
+
+    }
+
+
 
     private async Task<JwtSecurityToken?> CreateJwtTokenAsync(User user)
     {
