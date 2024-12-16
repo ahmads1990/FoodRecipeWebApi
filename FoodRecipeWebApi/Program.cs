@@ -37,8 +37,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         .EnableSensitiveDataLogging();
 });
 
-builder.Services.AddAutoMapper(typeof(AuthProfile).Assembly);
-
+builder.Services.AddAutoMapper(typeof(Profile).Assembly);
 
 // Security
 // configure jwt helper class to use jwt config info

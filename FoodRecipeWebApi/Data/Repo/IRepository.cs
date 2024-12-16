@@ -17,8 +17,8 @@ public interface IRepository<Entity> where Entity : BaseModel
     void SaveExclude(Entity entity, params string[] properties);
     void Delete(Entity entity);
     void SoftDelete(Entity entity);
-    void SaveChanges();
-    Task SaveChangesAsync();
+    bool SaveChanges();
+    Task<bool> SaveChangesAsync();
     public bool IsFound(int id);
 
 }

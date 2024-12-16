@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="Data\NewFolder\**" />
+    <Compile Remove="ViewModels\Category\**" />
     <Content Remove="Data\NewFolder\**" />
+    <Content Remove="ViewModels\Category\**" />
     <EmbeddedResource Remove="Data\NewFolder\**" />
+    <EmbeddedResource Remove="ViewModels\Category\**" />
     <None Remove="Data\NewFolder\**" />
+    <None Remove="ViewModels\Category\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +42,10 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Magica\Desktop\FoodRecipeWebApi\FoodRecipeWebApi\ViewModels\Category\.editorconfig" />
   </ItemGroup>
 
 </Project>
