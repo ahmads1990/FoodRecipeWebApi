@@ -25,12 +25,23 @@ public class AuthService : IAuthService
     public async Task<AuthViewModel> LoginUser(LoginViewModel loginViewModel)
     {
         AuthViewModel authDto = new AuthViewModel();
-        // return if email doesn't exist OR email+password don't match
+
+        // find user by email
         var user = _userRepo.GetByCondition(u => u.Email.Equals(loginViewModel.Email)).FirstOrDefault();
 
-        if (user is null || !_userRepo.CheckByConidition(u => u.Password.Equals(loginViewModel.Password)))
+        if (user is null)
         {
-            authDto.Message = "Email or Password is incorrect!";
+            authDto.Message = "Email doesn't exist";
+            return authDto;
+        }
+
+        // Hash the provided password and compare with the user's hashed password
+        var passwordHasher = new PasswordHasher<User>();
+        var passwordVerificationResult = passwordHasher.VerifyHashedPassword(user, user.Password, loginViewModel.Password);
+
+        if (passwordVerificationResult == PasswordVerificationResult.Failed)
+        {
+            authDto.Message = "Email or password is incorrect";
             return authDto;
         }
 
