@@ -1,4 +1,5 @@
 ﻿using FoodRecipeWebApi.Data.Repo;
+using FoodRecipeWebApi.Helpers;
 using FoodRecipeWebApi.Helpers.Config;
 using FoodRecipeWebApi.Models;
 using FoodRecipeWebApi.ViewModels.Auth;
@@ -36,8 +37,9 @@ public class AuthService : IAuthService
             return authDto;
         }
 
-        var jwtToken = await CreateJwtTokenAsync(user);
-        var claims = _UserClaimRepo.GetByCondition(c => c.UserId == user.ID);
+        var claims = _UserClaimRepo.GetByCondition(c => c.UserId == user.ID).ToList();
+
+        var jwtToken = TokenHelper.CreateJwtToken(user, claims, _jwtConfig);
 
         authDto.IsAuthenticated = true;
         authDto.UserID = user.ID;
@@ -66,35 +68,5 @@ public class AuthService : IAuthService
 
 
 
-    private async Task<JwtSecurityToken?> CreateJwtTokenAsync(User user)
-    {
-        if (user is null) return null;
-        // get user claims
-        var userClaims = _UserClaimRepo.GetByCondition(c => c.UserId == user.ID).ToList();
-        // create jwt claims
-        var jwtClaims = new[]
-        {
-                new UserClaim(JwtRegisteredClaimNames.Sub.ToString(), user.Name ?? string.Empty),
-                new UserClaim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new UserClaim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-                new UserClaim("uid", user.ID.ToString())
-        };
-        // merge both claims lists and jwtClaims to allClaims
-        var allClaims = jwtClaims.Union(userClaims).Select(c => new Claim(c.Type, c.Value));
 
-        // specify the signing key and algorithm
-        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.Key));
-        var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-
-        // finally create the token
-        var jwtSecurityToken = new JwtSecurityToken(
-        issuer: _jwtConfig.Issuer,
-            audience: _jwtConfig.Audience,
-            claims: allClaims,
-            expires: DateTime.Now.AddHours(_jwtConfig.DurationInHours),
-            signingCredentials: signingCredentials
-            );
-
-        return jwtSecurityToken;
-    }
 }
