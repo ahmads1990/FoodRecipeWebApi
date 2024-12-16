@@ -14,10 +14,10 @@ namespace FoodRecipeWebApi.DTO.Recipes
         [MaxLength(50)]
         public string Description { get; set; }
         [FromForm]
-        public  IFormFile Image { get; set; }
-        [Range(1,1000)]
+        public IFormFile Image { get; set; }
+        [Range(1, 1000)]
         public decimal Price { get; set; }
-        
+
         public string CategroryId { get; set; }
     }
 }

@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
-using FoodRecipeWebApi.Services;
-using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,8 +66,12 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
+<<<<<<< HEAD
 AutoMapperServices.Mapper = app.Services.GetService<IMapper>();
 
+=======
+AutoMapperServices.Mapper = app.Services.GetRequiredService<IMapper>();
+>>>>>>> origin/ahzakarya-branch
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

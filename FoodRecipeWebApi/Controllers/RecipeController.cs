@@ -1,14 +1,12 @@
 ﻿using FoodRecipeWebApi.DTO.Recipes;
 using FoodRecipeWebApi.Services.Recipes;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodRecipeWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RecipeController(IRecipeServices recipeServices): ControllerBase
+    public class RecipeController(IRecipeServices recipeServices) : ControllerBase
     {
         private readonly IRecipeServices recipeServices = recipeServices;
 

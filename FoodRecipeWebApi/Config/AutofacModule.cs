@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using AutoMapper;
-using FoodRecipeWebApi.Data;
 using FoodRecipeWebApi.Data.Repo;
 using FoodRecipeWebApi.Helpers;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +15,8 @@ public class AutofacModule : Module
         builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerLifetimeScope();
         builder.Register(ctx => new MapperConfiguration(cfg =>
         {
-            cfg.AddMaps(typeof(Program).Assembly); }))
+            cfg.AddMaps(typeof(Program).Assembly);
+        }))
         .AsSelf()
         .SingleInstance();
 

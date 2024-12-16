@@ -1,7 +1,6 @@
 ﻿using FoodRecipeWebApi.Services.Auth;
 using FoodRecipeWebApi.ViewModels.Auth;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 
 namespace FoodRecipeWebApi.Controllers;
 
@@ -30,7 +29,7 @@ public class AuthController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> Register(RegisterRequest request ,CancellationToken cancellationToken)
+    public async Task<IActionResult> Register(RegisterRequest request, CancellationToken cancellationToken)
     {
         try
         {

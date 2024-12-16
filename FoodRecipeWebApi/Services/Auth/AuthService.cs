@@ -52,14 +52,14 @@ public class AuthService : IAuthService
 
     public async Task RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
-        var emailIsExist = _userRepo.CheckByConidition(x=> x.Email == request.Email);
+        var emailIsExist = _userRepo.CheckByConidition(x => x.Email == request.Email);
         if (emailIsExist)
             throw new InvalidOperationException("Email is already registered.");
 
         var passwordHasher = new PasswordHasher<User>();
         var user = request.Map<User>();
-        user.Password = passwordHasher.HashPassword(user,request.Password);
-         _userRepo.Add(user);
+        user.Password = passwordHasher.HashPassword(user, request.Password);
+        _userRepo.Add(user);
         await _userRepo.SaveChangesAsync();
 
     }
