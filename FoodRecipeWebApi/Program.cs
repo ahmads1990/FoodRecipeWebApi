@@ -1,8 +1,11 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using FoodRecipeWebApi.Config;
 using FoodRecipeWebApi.Data;
 using FoodRecipeWebApi.Helpers.Config;
+using FoodRecipeWebApi.Services;
+using FoodRecipeWebApi.ViewModels.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -34,6 +37,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         .EnableSensitiveDataLogging();
 });
 
+builder.Services.AddAutoMapper(typeof(AuthProfile).Assembly);
+
+
 // Security
 // configure jwt helper class to use jwt config info
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("Jwt"));
@@ -60,6 +66,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
+AutoMapperServices.Mapper = app.Services.GetService<IMapper>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
