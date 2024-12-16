@@ -4,6 +4,7 @@ using FoodRecipeWebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodRecipeWebApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241211025218_Recipe and category")]
+    partial class Recipeandcategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,11 +108,8 @@ namespace FoodRecipeWebApi.Migrations
 
             modelBuilder.Entity("FoodRecipeWebApi.Models.User", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    b.Property<string>("ID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -144,7 +144,6 @@ namespace FoodRecipeWebApi.Migrations
                     b.ToTable("Users");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("FoodRecipeWebApi.Models.Recipe", b =>
                 {
                     b.HasOne("FoodRecipeWebApi.Models.Category", "Category")
@@ -159,64 +158,6 @@ namespace FoodRecipeWebApi.Migrations
             modelBuilder.Entity("FoodRecipeWebApi.Models.Category", b =>
                 {
                     b.Navigation("Recipes");
-=======
-            modelBuilder.Entity("FoodRecipeWebApi.Models.UserClaim", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserClaim");
-                });
-
-            modelBuilder.Entity("FoodRecipeWebApi.Models.UserClaim", b =>
-                {
-                    b.HasOne("FoodRecipeWebApi.Models.User", "User")
-                        .WithMany("Claims")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FoodRecipeWebApi.Models.User", b =>
-                {
-                    b.Navigation("Claims");
->>>>>>> 54aa95c9b2cf1f7f7dfdc33a7b04845fd2fd1bbd
                 });
 #pragma warning restore 612, 618
         }
