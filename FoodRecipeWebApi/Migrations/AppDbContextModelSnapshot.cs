@@ -24,8 +24,11 @@ namespace FoodRecipeWebApi.Migrations
 
             modelBuilder.Entity("FoodRecipeWebApi.Models.Category", b =>
                 {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
@@ -54,12 +57,14 @@ namespace FoodRecipeWebApi.Migrations
 
             modelBuilder.Entity("FoodRecipeWebApi.Models.Recipe", b =>
                 {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("CategroryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("CategroryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -144,22 +149,6 @@ namespace FoodRecipeWebApi.Migrations
                     b.ToTable("Users");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("FoodRecipeWebApi.Models.Recipe", b =>
-                {
-                    b.HasOne("FoodRecipeWebApi.Models.Category", "Category")
-                        .WithMany("Recipes")
-                        .HasForeignKey("CategroryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("FoodRecipeWebApi.Models.Category", b =>
-                {
-                    b.Navigation("Recipes");
-=======
             modelBuilder.Entity("FoodRecipeWebApi.Models.UserClaim", b =>
                 {
                     b.Property<int>("ID")
@@ -202,6 +191,17 @@ namespace FoodRecipeWebApi.Migrations
                     b.ToTable("UserClaim");
                 });
 
+            modelBuilder.Entity("FoodRecipeWebApi.Models.Recipe", b =>
+                {
+                    b.HasOne("FoodRecipeWebApi.Models.Category", "Category")
+                        .WithMany("Recipes")
+                        .HasForeignKey("CategroryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("FoodRecipeWebApi.Models.UserClaim", b =>
                 {
                     b.HasOne("FoodRecipeWebApi.Models.User", "User")
@@ -213,10 +213,14 @@ namespace FoodRecipeWebApi.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FoodRecipeWebApi.Models.Category", b =>
+                {
+                    b.Navigation("Recipes");
+                });
+
             modelBuilder.Entity("FoodRecipeWebApi.Models.User", b =>
                 {
                     b.Navigation("Claims");
->>>>>>> 54aa95c9b2cf1f7f7dfdc33a7b04845fd2fd1bbd
                 });
 #pragma warning restore 612, 618
         }
