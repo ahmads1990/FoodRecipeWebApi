@@ -22,4 +22,12 @@ public class CategoryController : ControllerBase
 
         return result ? Ok("Success") : BadRequest("Failed");
     }
+
+    [HttpPatch]
+    public IActionResult UpdateName(UpdateCategoryNameViewModel updateCategoryViewModel)
+    {
+        var result = _categoryService.UpdateCategoryName(updateCategoryViewModel);
+
+        return result ? Ok("Success") : BadRequest("Failed");
+    }
 }

@@ -18,4 +18,11 @@ public class CategoryService : ICategoryService
         _categoryRepository.Add(category);
         return _categoryRepository.SaveChanges();
     }
+
+    public bool UpdateCategoryName(UpdateCategoryNameViewModel categoryViewModel)
+    {
+        var category = categoryViewModel.Map<Models.Category>();
+        _categoryRepository.SaveInclude(category, nameof(Models.Category.Name));
+        return _categoryRepository.SaveChanges();
+    }
 }
