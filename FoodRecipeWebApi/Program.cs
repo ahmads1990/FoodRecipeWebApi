@@ -4,6 +4,7 @@ using AutoMapper;
 using FoodRecipeWebApi.Config;
 using FoodRecipeWebApi.Data;
 using FoodRecipeWebApi.Helpers.Config;
+using FoodRecipeWebApi.Middlewares;
 using FoodRecipeWebApi.Services;
 using FoodRecipeWebApi.ViewModels.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -81,5 +82,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();
+
+
+app.UseMiddleware<GlobalErrorHandlerMiddleware>();
 
 app.Run();
