@@ -66,12 +66,9 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
-<<<<<<< HEAD
-AutoMapperServices.Mapper = app.Services.GetService<IMapper>();
 
-=======
 AutoMapperServices.Mapper = app.Services.GetRequiredService<IMapper>();
->>>>>>> origin/ahzakarya-branch
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
