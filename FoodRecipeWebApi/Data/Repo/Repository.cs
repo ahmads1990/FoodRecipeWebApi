@@ -114,13 +114,13 @@ public class Repository<Entity> : IRepository<Entity> where Entity : BaseModel
         SaveInclude(entity, nameof(BaseModel.Deleted));
     }
 
-    public void SaveChanges()
+    public bool SaveChanges()
     {
-        _dbContext.SaveChanges();
+        return _dbContext.SaveChanges() > 0;
     }
 
-    public async Task SaveChangesAsync()
+    public async Task<bool> SaveChangesAsync()
     {
-        await _dbContext.SaveChangesAsync();
+        return await _dbContext.SaveChangesAsync() > 0;
     }
 }

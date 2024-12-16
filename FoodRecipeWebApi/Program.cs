@@ -4,9 +4,11 @@ using AutoMapper;
 using FoodRecipeWebApi.Config;
 using FoodRecipeWebApi.Data;
 using FoodRecipeWebApi.Helpers.Config;
+using FoodRecipeWebApi.Middlewares;
 using FoodRecipeWebApi.Services;
 using FoodRecipeWebApi.ViewModels.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
@@ -37,8 +39,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         .EnableSensitiveDataLogging();
 });
 
-builder.Services.AddAutoMapper(typeof(AuthProfile).Assembly);
-
+builder.Services.AddAutoMapper(typeof(Profile).Assembly);
 
 // Security
 // configure jwt helper class to use jwt config info
@@ -64,6 +65,23 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "Random key")),
     };
 });
+// Response Compression
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.EnableForHttps = true;
+    opts.Providers.Add<GzipCompressionProvider>();
+    opts.Providers.Add<BrotliCompressionProvider>();
+});
+
+builder.Services.Configure<BrotliCompressionProviderOptions>(opts =>
+{
+    opts.Level = System.IO.Compression.CompressionLevel.Fastest;
+});
+
+builder.Services.Configure<GzipCompressionProviderOptions>(opts =>
+{
+    opts.Level = System.IO.Compression.CompressionLevel.Optimal;
+});
 
 var app = builder.Build();
 
@@ -82,5 +100,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();
+
+
+app.UseMiddleware<GlobalErrorHandlerMiddleware>();
 
 app.Run();
