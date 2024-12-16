@@ -1,4 +1,5 @@
-﻿using FoodRecipeWebApi.Services.Category;
+﻿using FoodRecipeWebApi.Services;
+using FoodRecipeWebApi.Services.Category;
 using FoodRecipeWebApi.ViewModels.CategoryViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,17 @@ public class CategoryController : ControllerBase
     public CategoryController(ICategoryService categoryService)
     {
         _categoryService = categoryService;
+    }
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var result = _categoryService
+            .GetCategories()
+            .ProjectTo<CategoryViewModel>()
+            .ToList();
+            
+        return Ok(result);
     }
 
     [HttpPost]

@@ -7,6 +7,11 @@ public class CategoryService : ICategoryService
 {
     private readonly IRepository<Models.Category> _categoryRepository;
 
+    public IQueryable<Models.Category> GetCategories()
+    {
+        return _categoryRepository.GetAll();
+    }
+
     public CategoryService(IRepository<Models.Category> categoryRepository)
     {
         _categoryRepository = categoryRepository;
