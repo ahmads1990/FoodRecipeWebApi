@@ -5,11 +5,7 @@ using FoodRecipeWebApi.Models;
 
 namespace FoodRecipeWebApi.Services.Recipes
 {
-    public interface IRecipeServices
-    {
-        public void CreateRecipe(CreateRecipeDto dto);
-    }
-    public class RecipeServices(IRepository<Recipe> repository, ImageHelper imageHelper) : IRecipeServices
+    public class RecipeService(IRepository<Recipe> repository, ImageHelper imageHelper) : IRecipeService
     {
         private readonly IRepository<Recipe> repository = repository;
         private readonly ImageHelper imageHelper = imageHelper;

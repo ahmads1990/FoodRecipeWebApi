@@ -6,9 +6,9 @@ namespace FoodRecipeWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RecipeController(IRecipeServices recipeServices) : ControllerBase
+    public class RecipeController(IRecipeService recipeServices) : ControllerBase
     {
-        private readonly IRecipeServices recipeServices = recipeServices;
+        private readonly IRecipeService recipeServices = recipeServices;
 
         [HttpPost]
         public IActionResult CreateRecipe(CreateRecipeDto dto)
