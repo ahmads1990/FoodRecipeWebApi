@@ -29,9 +29,9 @@ public class Repository<Entity> : IRepository<Entity> where Entity : BaseModel
         return GetAll().Where(expression);
     }
 
-    public async Task<Entity?> GetByID(int id)
+    public  Entity? GetByID(int id)
     {
-        return await GetByCondition(x => x.ID == id).FirstOrDefaultAsync();
+        return GetByCondition(x => x.ID == id).FirstOrDefault();
     }
 
     public bool CheckByConidition(Expression<Func<Entity, bool>> expression)
@@ -122,5 +122,10 @@ public class Repository<Entity> : IRepository<Entity> where Entity : BaseModel
     public async Task<bool> SaveChangesAsync()
     {
         return await _dbContext.SaveChangesAsync() > 0;
+    }
+
+    public async Task<Entity?> GetByIDAsync(int id)
+    {
+        return await GetByCondition(x => x.ID == id).FirstOrDefaultAsync();
     }
 }

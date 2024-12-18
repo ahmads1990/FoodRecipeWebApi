@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace FoodRecipeWebApi.DTO.Recipes
+namespace FoodRecipeWebApi.ViewModels.RecipeViewModel
 {
-    public class CreateRecipeDto
+    public class CreateRecipeViewModel
     {
         [Required]
         [MinLength(2)]

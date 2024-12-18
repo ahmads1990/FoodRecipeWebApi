@@ -7,7 +7,8 @@ public interface IRepository<Entity> where Entity : BaseModel
     IQueryable<Entity> GetAll();
     IQueryable<Entity> GetAllWithoutDeleted();
     IQueryable<Entity> GetByCondition(Expression<Func<Entity, bool>> expression);
-    Task<Entity?> GetByID(int id);
+    Task<Entity?> GetByIDAsync(int id);
+    Entity? GetByID(int id);
     bool CheckByConidition(Expression<Func<Entity, bool>> expression);
     bool CheckExistsByID(int id);
     void Add(Entity entity);
