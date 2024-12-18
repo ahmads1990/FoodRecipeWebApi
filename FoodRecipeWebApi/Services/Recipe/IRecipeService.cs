@@ -10,5 +10,6 @@ namespace FoodRecipeWebApi.Services.Recipes
         public ApiResponseViewModel<GetRecipeViewModel> GetRecipeDetails(int id);
         public ApiResponseViewModel<bool> DeleteRecipe(int id);
         public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetRecipesByCategory(int categoryId);
+        public Task<ApiResponseViewModel<bool>> UpdateRecipe(UpdateRecipeViewModel viewModel);
     }
 }

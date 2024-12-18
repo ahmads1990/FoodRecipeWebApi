@@ -38,10 +38,19 @@ namespace FoodRecipeWebApi.Controllers
                 return new(400,ModelState);
             }
         }
-        [HttpDelete("DeleteRecipe")]
+        [HttpDelete("DeleteRecipe/{id:int}")]
         public ApiResponseViewModel<bool> DeleteRecipe(int id)
         {
             return recipeServices.DeleteRecipe(id);
         }
+        [HttpPut("UpdateRecipe")]
+        public async Task<ApiResponseViewModel<bool>> UpdateRecipe(UpdateRecipeViewModel viewModel)
+        {
+            if(ModelState.IsValid)
+            {
+                return await recipeServices.UpdateRecipe(viewModel);
+            }
+            return new(400, ModelState);
+        }   
     }
 }

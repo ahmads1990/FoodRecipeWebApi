@@ -67,10 +67,7 @@ public class Repository<Entity> : IRepository<Entity> where Entity : BaseModel
         _entities.Update(entity);
     }
 
-    public bool IsFound(int id)
-    {
-        return _entities.Any(e => e.ID.Equals(id));
-    }
+
 
     public void SaveInclude(Entity entity, params string[] properties)
     {

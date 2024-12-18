@@ -10,7 +10,9 @@ namespace FoodRecipeWebApi.Models
         public string ImageUrl { get; set; }
         public decimal Price { get; set; }
         [ForeignKey("Category")]
-        public int CategroryId { get; set; }
+        public int CategoryId { get; set; }
         public Category Category { get; set; }
+        public ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
+
     }
 }

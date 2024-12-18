@@ -1,5 +1,6 @@
 ﻿using FoodRecipeWebApi.Services;
 using FoodRecipeWebApi.Services.Category;
+using FoodRecipeWebApi.ViewModels;
 using FoodRecipeWebApi.ViewModels.CategoryViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,5 +42,10 @@ public class CategoryController : ControllerBase
         var result = _categoryService.UpdateCategoryName(updateCategoryViewModel);
 
         return result ? Ok("Success") : BadRequest("Failed");
+    }
+    [HttpDelete("{id:int}")]
+    public ApiResponseViewModel<bool> DeleteCategory(int id)
+    {
+        return _categoryService.DeleteCategory(id);
     }
 }

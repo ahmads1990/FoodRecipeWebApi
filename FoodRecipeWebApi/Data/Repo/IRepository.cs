@@ -20,6 +20,4 @@ public interface IRepository<Entity> where Entity : BaseModel
     void SoftDelete(Entity entity);
     bool SaveChanges();
     Task<bool> SaveChangesAsync();
-    public bool IsFound(int id);
-
 }

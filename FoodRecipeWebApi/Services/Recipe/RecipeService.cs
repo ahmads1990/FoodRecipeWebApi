@@ -32,7 +32,7 @@ namespace FoodRecipeWebApi.Services.Recipes
         }
         public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetRecipesByCategory(int categoryId)
         {
-            var recipesByCategory = repository.GetByCondition(r=>r.CategroryId==categoryId);
+            var recipesByCategory = repository.GetByCondition(r=>r.CategoryId==categoryId);
             var data = recipesByCategory.ProjectTo<GetRecipeViewModel>();
             return new(200,data,"Process Success");
         }
@@ -46,6 +46,20 @@ namespace FoodRecipeWebApi.Services.Recipes
             repository.Add(recipe);
             await repository.SaveChangesAsync();
             return new(201, "Created");
+        }
+        public async Task<ApiResponseViewModel<bool>> UpdateRecipe(UpdateRecipeViewModel viewModel)
+        {
+            if (!repository.CheckExistsByID(viewModel.Id))
+            {
+                return new ApiResponseViewModel<bool>(404,"Recipe Not Found");
+            }
+            var recipe = viewModel.Map<Recipe>();
+            var imageurl = await imageHelper.SaveImageAsync(viewModel.Image);
+            recipe.ImageUrl = imageurl;
+            repository.SaveInclude(recipe,nameof(recipe.Name), nameof(recipe.ImageUrl), 
+                nameof(recipe.Description), nameof(recipe.Tag), nameof(recipe.Price));
+            await repository.SaveChangesAsync();
+            return new ApiResponseViewModel<bool>(204, "Recipe Updated");
         }
 
         public ApiResponseViewModel<bool> DeleteRecipe(int id)

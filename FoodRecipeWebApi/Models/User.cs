@@ -6,4 +6,5 @@ public class User : BaseModel
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public IEnumerable<UserClaim> Claims { get; set; } = new List<UserClaim>();
+    public ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
 }
