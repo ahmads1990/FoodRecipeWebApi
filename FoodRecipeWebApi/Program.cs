@@ -6,6 +6,7 @@ using FoodRecipeWebApi.Data;
 using FoodRecipeWebApi.Helpers.Config;
 using FoodRecipeWebApi.Middlewares;
 using FoodRecipeWebApi.Services;
+using FoodRecipeWebApi.Settings;
 using FoodRecipeWebApi.ViewModels.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -27,6 +28,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 // Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
