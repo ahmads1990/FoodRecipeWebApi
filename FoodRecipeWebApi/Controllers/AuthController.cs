@@ -42,4 +42,36 @@ public class AuthController : ControllerBase
             return Conflict(new { error = ex.Message });
         }
     }
+
+
+    [HttpPost]
+    public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+
+            await _authService.ConfirmEmailAsync(request);
+            return Ok(new { message = "User Activated successfully." });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
+    }
+
+
+    [HttpPost]
+    public async Task<IActionResult> ResendConfirmationEmail(ResendConfirmationEmailRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+
+            await _authService.ResendConfirmEmailAsync(request);
+            return Ok(new { message = "mail sent successfully." });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
+    }
 }

@@ -18,7 +18,7 @@ public class GlobalErrorHandlerMiddleware
         }
         catch (Exception ex)
         {
-            File.WriteAllText("D:\\Logs.txt", $"Error occures: {ex.Message}");
+            File.WriteAllText("D:\\Logs.txt", $"Error occures: {ex.Message}  {ex.InnerException} {ex.Source} {ex.Data}");
 
             _logger.LogError(ex.Message);
 
