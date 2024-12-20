@@ -1,5 +1,6 @@
 ﻿using FoodRecipeWebApi.Services.Auth;
 using FoodRecipeWebApi.ViewModels.Auth;
+using FoodRecipeWebApi.ViewModels.Auth.PasswordReset;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodRecipeWebApi.Controllers;
@@ -23,17 +24,14 @@ public class AuthController : ControllerBase
         if (!result.IsAuthenticated)
             return BadRequest(result.Message);
 
-        //Todo send confirmation mail
         return Ok(result);
     }
-
 
     [HttpPost]
     public async Task<IActionResult> Register(RegisterRequest request, CancellationToken cancellationToken)
     {
         try
         {
-
             await _authService.RegisterAsync(request, cancellationToken);
             return Ok(new { message = "User registered successfully." });
         }
@@ -43,13 +41,11 @@ public class AuthController : ControllerBase
         }
     }
 
-
     [HttpPost]
     public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest request, CancellationToken cancellationToken)
     {
         try
         {
-
             await _authService.ConfirmEmailAsync(request);
             return Ok(new { message = "User Activated successfully." });
         }
@@ -59,13 +55,11 @@ public class AuthController : ControllerBase
         }
     }
 
-
     [HttpPost]
     public async Task<IActionResult> ResendConfirmationEmail(ResendConfirmationEmailRequest request, CancellationToken cancellationToken)
     {
         try
         {
-
             await _authService.ResendConfirmEmailAsync(request);
             return Ok(new { message = "mail sent successfully." });
         }
@@ -73,5 +67,26 @@ public class AuthController : ControllerBase
         {
             return Conflict(new { error = ex.Message });
         }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RequestPasswordReset(RequestPasswordResetViewModel requestViewModel)
+    {
+        var result = await _authService.RequestResetPassword(requestViewModel);
+
+        if (!result.IsAuthenticated)
+            return BadRequest(result.Message);
+
+        return Ok(result);
+    }
+    [HttpPost]
+    public async Task<IActionResult> PasswordReset(PasswordResetViewModel passwordResetViewModel)
+    {
+        var result = await _authService.ResetUserPassword(passwordResetViewModel);
+
+        if (!result.IsAuthenticated)
+            return BadRequest(result.Message);
+
+        return Ok(result);
     }
 }

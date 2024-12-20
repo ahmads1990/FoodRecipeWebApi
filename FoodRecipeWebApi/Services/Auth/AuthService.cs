@@ -3,13 +3,16 @@ using FoodRecipeWebApi.Helpers;
 using FoodRecipeWebApi.Helpers.Config;
 using FoodRecipeWebApi.Models;
 using FoodRecipeWebApi.ViewModels.Auth;
+using FoodRecipeWebApi.ViewModels.Auth.PasswordReset;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace FoodRecipeWebApi.Services.Auth;
 
@@ -68,7 +71,7 @@ public class AuthService : IAuthService
         return authDto;
     }
 
-    public async Task RegisterAsync(ViewModels.Auth.RegisterRequest request, CancellationToken cancellationToken)
+    public async Task RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
         var emailIsExist = _userRepo.CheckByConidition(x => x.Email == request.Email);
         if (emailIsExist)
@@ -92,7 +95,6 @@ public class AuthService : IAuthService
         }
 
     }
-
 
     public async Task ConfirmEmailAsync(ConfirmEmailRequest request)
 
@@ -121,7 +123,6 @@ public class AuthService : IAuthService
         await _userRepo.SaveChangesAsync();
     }
 
-
     public async Task ResendConfirmEmailAsync(ViewModels.Auth.ResendConfirmationEmailRequest request)
     {
         if (_userRepo.GetByCondition(x => x.Email == request.Email).FirstOrDefault() is not { } user)
@@ -143,6 +144,7 @@ public class AuthService : IAuthService
         return;
 
     }
+
     private async Task SendConfimartionEmail(User user, string code)
     {
         var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
@@ -154,6 +156,72 @@ public class AuthService : IAuthService
         await _emailSender.SendEmailAsync(user.Email!, "✅Food Recipe: Email Confirmation", emailBody);
 
         await Task.CompletedTask;
+    }
 
+    public async Task<AuthViewModel> RequestResetPassword(RequestPasswordResetViewModel request)
+    {
+        AuthViewModel authDto = new AuthViewModel();
+
+        // find user by email
+        var user = _userRepo.GetByCondition(u => u.Email.Equals(request.Email)).FirstOrDefault();
+
+        if (user is null)
+        {
+            authDto.Message = "Email doesn't exist";
+            return authDto;
+        }
+
+        // User exists generate short lived token 
+        var claims = _UserClaimRepo.GetByCondition(c => c.UserId == user.ID).ToList();
+
+        // Temp update jwtconfig token life time
+        _jwtConfig.DurationInHours = 1d / 4d;
+        var jwtToken = TokenHelper.CreateJwtToken(user, claims, _jwtConfig);
+
+        // Generate password reset email
+        var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
+
+        var passwordResetLink = $"{origin}/Auth/passwordReset?token={jwtToken.ToString()}&NewPassword={"what"}";
+        var emailBody = $"Password rest link for {user.Name}, " +
+            $"click this link to reset your password {passwordResetLink}" +
+            $" It expires in 15 minutes";
+    
+        await _emailSender.SendEmailAsync(user.Email!, "✅Food Recipe: Reset your Password", emailBody);
+
+
+        authDto.Message = "Check your Email";
+        authDto.IsAuthenticated = true;
+        return authDto;
+    }
+
+    public async Task<AuthViewModel> ResetUserPassword(PasswordResetViewModel passwordResetViewModel)
+    {
+        AuthViewModel authDto = new AuthViewModel();
+
+        var handler = new JwtSecurityTokenHandler(); 
+        
+        // Validate the token format
+        if (!handler.CanReadToken(passwordResetViewModel.Token))
+        {
+            authDto.Message = "Invalid JWT token format.";
+            return authDto;
+        }
+
+        // Read the token
+        var jwtToken = handler.ReadJwtToken(passwordResetViewModel.Token);
+
+        var UserId = int.Parse(jwtToken.Claims.FirstOrDefault(c => c.Type == "uid")?.Value);
+
+        // Update user
+        var user = new User()
+        {
+            ID = UserId,
+            Password = passwordResetViewModel.NewPassword
+        };
+        _userRepo.SaveInclude(user, nameof(User.Password));
+
+        authDto.Message = "Updated password";
+        authDto.IsAuthenticated = true;
+        return authDto;
     }
 }
