@@ -11,17 +11,17 @@ namespace FoodRecipeWebApi.Controllers
     {
         private readonly IRecipeService recipeServices = recipeServices;
         [HttpGet("GetAllRecipes")]
-        public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetAll() 
+        public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetAll()
         {
             return recipeServices.GetAllRecipes();
         }
         [HttpGet("GetlRecipeDetails/{id:int}")]
-        public ApiResponseViewModel<GetRecipeViewModel> GetRecipeDetails(int id) 
+        public ApiResponseViewModel<GetRecipeViewModel> GetRecipeDetails(int id)
         {
             return recipeServices.GetRecipeDetails(id);
         }
         [HttpGet("GetlRecipesByCategory/{id:int}")]
-        public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetRecipesByCategory(int id) 
+        public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetRecipesByCategory(int id)
         {
             return recipeServices.GetRecipesByCategory(id);
         }
@@ -30,12 +30,12 @@ namespace FoodRecipeWebApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                return  await recipeServices.CreateRecipe(viewModel);
-                
+                return await recipeServices.CreateRecipe(viewModel);
+
             }
             else
             {
-                return new(400,ModelState);
+                return new(400, ModelState);
             }
         }
         [HttpDelete("DeleteRecipe/{id:int}")]
@@ -46,11 +46,11 @@ namespace FoodRecipeWebApi.Controllers
         [HttpPut("UpdateRecipe")]
         public async Task<ApiResponseViewModel<bool>> UpdateRecipe(UpdateRecipeViewModel viewModel)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 return await recipeServices.UpdateRecipe(viewModel);
             }
             return new(400, ModelState);
-        }   
+        }
     }
 }

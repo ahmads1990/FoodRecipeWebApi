@@ -7,7 +7,7 @@ using FoodRecipeWebApi.ViewModels.RecipeViewModel;
 
 namespace FoodRecipeWebApi.Services.Recipes
 {
-    public class RecipeService(IRepository<Recipe> repository, ImageHelper imageHelper,ICategoryService categoryService) : IRecipeService
+    public class RecipeService(IRepository<Recipe> repository, ImageHelper imageHelper, ICategoryService categoryService) : IRecipeService
     {
         private readonly IRepository<Recipe> repository = repository;
         private readonly ImageHelper imageHelper = imageHelper;
@@ -17,12 +17,12 @@ namespace FoodRecipeWebApi.Services.Recipes
         {
             var recipes = repository.GetAllWithoutDeleted();
             var data = recipes.ProjectTo<GetRecipeViewModel>();
-            return new(200,data,"Process Success"); 
+            return new(200, data, "Process Success");
         }
         public ApiResponseViewModel<GetRecipeViewModel> GetRecipeDetails(int id)
         {
-            var recipe =  repository.GetByID(id);
-            if(recipe is null)
+            var recipe = repository.GetByID(id);
+            if (recipe is null)
             {
                 return new(404, "Recipe Not Found");
             }
@@ -32,9 +32,9 @@ namespace FoodRecipeWebApi.Services.Recipes
         }
         public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetRecipesByCategory(int categoryId)
         {
-            var recipesByCategory = repository.GetByCondition(r=>r.CategoryId==categoryId);
+            var recipesByCategory = repository.GetByCondition(r => r.CategoryId == categoryId);
             var data = recipesByCategory.ProjectTo<GetRecipeViewModel>();
-            return new(200,data,"Process Success");
+            return new(200, data, "Process Success");
         }
 
         public async Task<ApiResponseViewModel<bool>> CreateRecipe(CreateRecipeViewModel viewModel)
@@ -51,12 +51,12 @@ namespace FoodRecipeWebApi.Services.Recipes
         {
             if (!repository.CheckExistsByID(viewModel.Id))
             {
-                return new ApiResponseViewModel<bool>(404,"Recipe Not Found");
+                return new ApiResponseViewModel<bool>(404, "Recipe Not Found");
             }
             var recipe = viewModel.Map<Recipe>();
             var imageurl = await imageHelper.SaveImageAsync(viewModel.Image);
             recipe.ImageUrl = imageurl;
-            repository.SaveInclude(recipe,nameof(recipe.Name), nameof(recipe.ImageUrl), 
+            repository.SaveInclude(recipe, nameof(recipe.Name), nameof(recipe.ImageUrl),
                 nameof(recipe.Description), nameof(recipe.Tag), nameof(recipe.Price));
             await repository.SaveChangesAsync();
             return new ApiResponseViewModel<bool>(204, "Recipe Updated");
@@ -65,7 +65,7 @@ namespace FoodRecipeWebApi.Services.Recipes
         public ApiResponseViewModel<bool> DeleteRecipe(int id)
         {
             var recipe = repository.GetByID(id);
-            if(recipe is null)
+            if (recipe is null)
             {
                 return new(404, "Recipe Not Found");
             }

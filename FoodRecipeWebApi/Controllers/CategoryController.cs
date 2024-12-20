@@ -24,7 +24,7 @@ public class CategoryController : ControllerBase
             .GetCategories()
             .ProjectTo<CategoryViewModel>()
             .ToList();
-            
+
         return Ok(result);
     }
 

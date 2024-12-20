@@ -1,10 +1,8 @@
 ﻿using FoodRecipeWebApi.Settings;
 using MailKit.Security;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using System.Net.Mail;
 
 namespace FoodRecipeWebApi.Services.Email;
 

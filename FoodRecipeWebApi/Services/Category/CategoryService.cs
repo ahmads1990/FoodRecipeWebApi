@@ -40,7 +40,7 @@ public class CategoryService : ICategoryService
         }
         _categoryRepository.SoftDelete(category);
         return new(204, "Category Deleted");
-        
+
     }
 
 }

@@ -7,7 +7,6 @@ using FoodRecipeWebApi.Helpers.Config;
 using FoodRecipeWebApi.Middlewares;
 using FoodRecipeWebApi.Services;
 using FoodRecipeWebApi.Settings;
-using FoodRecipeWebApi.ViewModels.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;

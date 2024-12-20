@@ -4,7 +4,6 @@ using FoodRecipeWebApi.Helpers.Config;
 using FoodRecipeWebApi.Models;
 using FoodRecipeWebApi.ViewModels.Auth;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
@@ -22,7 +21,7 @@ public class AuthService : IAuthService
     private readonly IEmailSender _emailSender;
     private readonly JwtConfig _jwtConfig;
 
-    public AuthService(IRepository<User> userRepo, IRepository<UserClaim> userClaimRepo, IOptions<JwtConfig> jwtConfig,IHttpContextAccessor httpContextAccessor, IEmailSender emailSender)
+    public AuthService(IRepository<User> userRepo, IRepository<UserClaim> userClaimRepo, IOptions<JwtConfig> jwtConfig, IHttpContextAccessor httpContextAccessor, IEmailSender emailSender)
     {
         _userRepo = userRepo;
         _UserClaimRepo = userClaimRepo;
@@ -80,7 +79,7 @@ public class AuthService : IAuthService
         user.Password = passwordHasher.HashPassword(user, request.Password);
         _userRepo.Add(user);
         await _userRepo.SaveChangesAsync();
-        var IsAdded = _userRepo.CheckByConidition(x=> x.Email == request.Email);
+        var IsAdded = _userRepo.CheckByConidition(x => x.Email == request.Email);
         if (IsAdded)
         {
             var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
@@ -89,7 +88,7 @@ public class AuthService : IAuthService
             _userRepo.Update(user);
             await _userRepo.SaveChangesAsync();
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token)); // URL-safe encoding
-           await SendConfimartionEmail(user, encodedToken);
+            await SendConfimartionEmail(user, encodedToken);
         }
 
     }
@@ -104,7 +103,7 @@ public class AuthService : IAuthService
         if (user.IsConfirmed)
             throw new InvalidOperationException("Email Already Confirmed");
         var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
-        var storedToken = _userRepo.GetByCondition(x=> x.ID == request.UserId && x.ConfirmCode == decodedToken).FirstOrDefault();
+        var storedToken = _userRepo.GetByCondition(x => x.ID == request.UserId && x.ConfirmCode == decodedToken).FirstOrDefault();
         if (storedToken == null)
         {
             throw new InvalidOperationException("Invalid Code");
@@ -114,7 +113,7 @@ public class AuthService : IAuthService
         if (storedToken.ExpirationDate < DateTime.UtcNow)
         {
             throw new InvalidOperationException("Expired Code");
-            
+
         }
 
         user.IsConfirmed = true;
@@ -125,7 +124,7 @@ public class AuthService : IAuthService
 
     public async Task ResendConfirmEmailAsync(ViewModels.Auth.ResendConfirmationEmailRequest request)
     {
-        if (_userRepo.GetByCondition(x=> x.Email == request.Email).FirstOrDefault() is not { } user)
+        if (_userRepo.GetByCondition(x => x.Email == request.Email).FirstOrDefault() is not { } user)
             return;
 
         if (user.IsConfirmed)
@@ -152,7 +151,7 @@ public class AuthService : IAuthService
                     {"{{name}}",user.Name},
                     {"{{action_url}}",$"{origin}/Auth/emailConfirmation?userId={user.ID}&code={code}"}
                 });
-       await  _emailSender.SendEmailAsync(user.Email!, "✅Food Recipe: Email Confirmation", emailBody);
+        await _emailSender.SendEmailAsync(user.Email!, "✅Food Recipe: Email Confirmation", emailBody);
 
         await Task.CompletedTask;
 
