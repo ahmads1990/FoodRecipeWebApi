@@ -2,6 +2,8 @@
 using AutoMapper;
 using FoodRecipeWebApi.Data.Repo;
 using FoodRecipeWebApi.Helpers;
+using FoodRecipeWebApi.Services.Email;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodRecipeWebApi.Config;
@@ -11,6 +13,10 @@ public class AutofacModule : Module
     protected override void Load(ContainerBuilder builder)
     {
         builder.RegisterType<DbContext>().InstancePerLifetimeScope();
+
+        builder.RegisterType<EmailService>()
+                    .As<IEmailSender>()
+                    .InstancePerLifetimeScope();
 
         builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerLifetimeScope();
         builder.Register(ctx => new MapperConfiguration(cfg =>
