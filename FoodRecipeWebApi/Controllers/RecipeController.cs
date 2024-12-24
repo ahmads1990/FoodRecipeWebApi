@@ -52,5 +52,12 @@ namespace FoodRecipeWebApi.Controllers
             }
             return new(400, ModelState);
         }
+
+        [HttpPut("DeleteFromFavourites/{id:int}")]
+        public ApiResponseViewModel<bool> DeleteFromFavourites(int id)
+        {
+            var response = recipeServices.DeleteRecipeFromFavourites(id);
+            return response;
+        }
     }
 }

@@ -3,17 +3,18 @@ using FoodRecipeWebApi.Helpers;
 using FoodRecipeWebApi.Mappings;
 using FoodRecipeWebApi.Models;
 using FoodRecipeWebApi.Services.Category;
+using FoodRecipeWebApi.Services.Favourites;
 using FoodRecipeWebApi.ViewModels;
 using FoodRecipeWebApi.ViewModels.RecipeViewModel;
 
 namespace FoodRecipeWebApi.Services.Recipes
 {
-    public class RecipeService(IRepository<Recipe> repository, ImageHelper imageHelper, ICategoryService categoryService) : IRecipeService
+    public class RecipeService(IRepository<Recipe> repository, ImageHelper imageHelper, ICategoryService categoryService, IFavouriteService favService) : IRecipeService
     {
         private readonly IRepository<Recipe> repository = repository;
         private readonly ImageHelper imageHelper = imageHelper;
         private readonly ICategoryService categoryService = categoryService;
-
+        private readonly IFavouriteService favouriteService = favService;
         public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetAllRecipes()
         {
             var recipes = repository.GetAllWithoutDeleted();
@@ -72,6 +73,10 @@ namespace FoodRecipeWebApi.Services.Recipes
             }
             repository.SoftDelete(recipe);
             return new(204, "Recipe Deleted");
+        }
+        public ApiResponseViewModel<bool> DeleteRecipeFromFavourites(int id)
+        {
+            return favouriteService.DeleteFromFavourites(id);
         }
     }
 }
