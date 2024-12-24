@@ -10,6 +10,7 @@ namespace FoodRecipeWebApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    
 
     public AuthController(IAuthService authService)
     {
@@ -79,6 +80,7 @@ public class AuthController : ControllerBase
 
         return Ok(result);
     }
+    
     [HttpPost]
     public async Task<IActionResult> PasswordReset(PasswordResetViewModel passwordResetViewModel)
     {

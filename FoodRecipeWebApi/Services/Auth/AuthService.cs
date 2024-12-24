@@ -7,6 +7,7 @@ using FoodRecipeWebApi.ViewModels.Auth.PasswordReset;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -22,14 +23,16 @@ public class AuthService : IAuthService
     private readonly IRepository<UserClaim> _UserClaimRepo;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IEmailSender _emailSender;
+    private readonly IDistributedCache _redisCache;
     private readonly JwtConfig _jwtConfig;
 
-    public AuthService(IRepository<User> userRepo, IRepository<UserClaim> userClaimRepo, IOptions<JwtConfig> jwtConfig, IHttpContextAccessor httpContextAccessor, IEmailSender emailSender)
+    public AuthService(IRepository<User> userRepo, IRepository<UserClaim> userClaimRepo, IHttpContextAccessor httpContextAccessor, IEmailSender emailSender, IDistributedCache redisCache, IOptions<JwtConfig> jwtConfig)
     {
         _userRepo = userRepo;
         _UserClaimRepo = userClaimRepo;
         _httpContextAccessor = httpContextAccessor;
         _emailSender = emailSender;
+        _redisCache = redisCache;
         _jwtConfig = jwtConfig.Value;
     }
 
@@ -174,22 +177,35 @@ public class AuthService : IAuthService
         // User exists generate short lived token 
         var claims = _UserClaimRepo.GetByCondition(c => c.UserId == user.ID).ToList();
 
-        // Temp update jwtconfig token life time
-        _jwtConfig.DurationInHours = 1d / 4d;
-        var jwtToken = TokenHelper.CreateJwtToken(user, claims, _jwtConfig);
+        // Generate otp
+        var userOtp = OtpHelper.GenerateRandomOtp(digits: 6);
+
+        // Cache OTP with expiration
+        var cacheOptions = new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
+        };
+        await _redisCache.SetStringAsync($"otp{user.ID}", userOtp, cacheOptions);
 
         // Generate password reset email
         var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
 
-        var passwordResetLink = $"{origin}/Auth/passwordReset?token={jwtToken.ToString()}&NewPassword={"what"}";
-        var emailBody = $"Password rest link for {user.Name}, " +
-            $"click this link to reset your password {passwordResetLink}" +
-            $" It expires in 15 minutes";
-    
+        var passwordResetLink = $"{origin}/Auth/passwordReset?otp={userOtp}";
+        var emailBody = $@"
+            <p>Hi {user.Name},</p>
+            <p>You requested a password reset for your account.</p>
+            <p>Your One-Time Password (OTP) is: <strong>{userOtp}</strong></p>
+            <p>Click the link below to reset your password:</p>
+            <p><a href='{passwordResetLink}'>Reset Your Password</a></p>
+            <p>This link will expire in 15 minutes.</p>
+            <p>If you did not request a password reset, please ignore this email.</p>
+            <p>Thank you,<br/>The Fake Website Team</p>
+        ";
+
         await _emailSender.SendEmailAsync(user.Email!, "✅Food Recipe: Reset your Password", emailBody);
 
-
         authDto.Message = "Check your Email";
+        authDto.UserID = user.ID;
         authDto.IsAuthenticated = true;
         return authDto;
     }
@@ -198,27 +214,26 @@ public class AuthService : IAuthService
     {
         AuthViewModel authDto = new AuthViewModel();
 
-        var handler = new JwtSecurityTokenHandler(); 
-        
-        // Validate the token format
-        if (!handler.CanReadToken(passwordResetViewModel.Token))
+        // Verify OTP
+        var cachedOtp = await _redisCache.GetStringAsync($"otp{passwordResetViewModel.UserId}");
+        if (cachedOtp == null || cachedOtp != passwordResetViewModel.Otp)
         {
-            authDto.Message = "Invalid JWT token format.";
+            authDto.Message = "Invalid OTP";
             return authDto;
         }
-
-        // Read the token
-        var jwtToken = handler.ReadJwtToken(passwordResetViewModel.Token);
-
-        var UserId = int.Parse(jwtToken.Claims.FirstOrDefault(c => c.Type == "uid")?.Value);
 
         // Update user
         var user = new User()
         {
-            ID = UserId,
+            ID = passwordResetViewModel.UserId,
             Password = passwordResetViewModel.NewPassword
         };
+
         _userRepo.SaveInclude(user, nameof(User.Password));
+        await _userRepo.SaveChangesAsync();
+
+        // Clear the cached OTP
+        await _redisCache.RemoveAsync($"otp{passwordResetViewModel.UserId}");
 
         authDto.Message = "Updated password";
         authDto.IsAuthenticated = true;
