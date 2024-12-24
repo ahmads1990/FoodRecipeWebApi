@@ -66,9 +66,6 @@ public class AuthService : IAuthService
 
         authDto.IsAuthenticated = true;
         authDto.UserID = user.ID;
-        authDto.Username = user.Name ?? string.Empty;
-        authDto.Email = user.Email ?? string.Empty;
-        authDto.Claims = claims.Select(c => c.Type).ToList();
         authDto.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
         authDto.ExpiresOn = jwtToken?.ValidTo ?? DateTime.Now;
 
