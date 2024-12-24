@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace FoodRecipeWebApi.Services;
+namespace FoodRecipeWebApi.Mappings;
 
 public static class AutoMapperServices
 {

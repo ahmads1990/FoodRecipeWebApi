@@ -1,4 +1,4 @@
-﻿using FoodRecipeWebApi.Services;
+﻿using FoodRecipeWebApi.Mappings;
 using FoodRecipeWebApi.Services.Category;
 using FoodRecipeWebApi.ViewModels;
 using FoodRecipeWebApi.ViewModels.CategoryViewModels;

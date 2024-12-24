@@ -1,5 +1,6 @@
 ﻿using FoodRecipeWebApi.Data.Repo;
 using FoodRecipeWebApi.Helpers;
+using FoodRecipeWebApi.Mappings;
 using FoodRecipeWebApi.Models;
 using FoodRecipeWebApi.Services.Category;
 using FoodRecipeWebApi.ViewModels;

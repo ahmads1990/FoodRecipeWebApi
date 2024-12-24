@@ -1,6 +1,7 @@
 ﻿using FoodRecipeWebApi.Data.Repo;
 using FoodRecipeWebApi.Helpers;
 using FoodRecipeWebApi.Helpers.Config;
+using FoodRecipeWebApi.Mappings;
 using FoodRecipeWebApi.Models;
 using FoodRecipeWebApi.ViewModels.Auth;
 using FoodRecipeWebApi.ViewModels.Auth.PasswordReset;
