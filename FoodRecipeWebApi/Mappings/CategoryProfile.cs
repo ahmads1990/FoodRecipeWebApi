@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using FoodRecipeWebApi.Models;
+using FoodRecipeWebApi.ViewModels.CategoryViewModels;
 
-namespace FoodRecipeWebApi.ViewModels.CategoryViewModels.Mapping;
+namespace FoodRecipeWebApi.Mappings;
 
 public class CategoryProfile : Profile
 {
