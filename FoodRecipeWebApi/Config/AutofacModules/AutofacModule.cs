@@ -6,7 +6,7 @@ using FoodRecipeWebApi.Services.Email;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace FoodRecipeWebApi.Config;
+namespace FoodRecipeWebApi.Config.AutofacModules;
 
 public class AutofacModule : Module
 {

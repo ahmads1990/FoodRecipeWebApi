@@ -29,7 +29,7 @@ public class Repository<Entity> : IRepository<Entity> where Entity : BaseModel
         return GetAll().Where(expression);
     }
 
-    public  Entity? GetByID(int id)
+    public Entity? GetByID(int id)
     {
         return GetByCondition(x => x.ID == id).FirstOrDefault();
     }

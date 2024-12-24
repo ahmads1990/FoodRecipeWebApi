@@ -2,12 +2,12 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using FoodRecipeWebApi.Config;
+using FoodRecipeWebApi.Config.AutofacModules;
 using FoodRecipeWebApi.Data;
 using FoodRecipeWebApi.Helpers.Config;
+using FoodRecipeWebApi.Mappings;
 using FoodRecipeWebApi.Middlewares;
-using FoodRecipeWebApi.Services;
 using FoodRecipeWebApi.Settings;
-using FoodRecipeWebApi.ViewModels.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +16,16 @@ using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Load Redis settings from configuration
+var redisConnectionString = builder.Configuration["Redis:ConnectionString"];
+
 // Autofac
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(container =>
 {
     container.RegisterModule(new AutofacModule());
+    container.RegisterModule(new RedisCacheModule(redisConnectionString));
 });
 
 // Add services to the container.
