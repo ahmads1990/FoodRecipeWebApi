@@ -1,5 +1,7 @@
-﻿using FoodRecipeWebApi.Models;
+﻿using FoodRecipeWebApi.Helpers;
+using FoodRecipeWebApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1;
 using System.Linq.Expressions;
 namespace FoodRecipeWebApi.Data.Repo;
 
@@ -12,6 +14,10 @@ public class Repository<Entity> : IRepository<Entity> where Entity : BaseModel
     {
         _dbContext = dbContext;
         _entities = _dbContext.Set<Entity>();
+    }
+    public IQueryable<Entity> GetByPage(PaginationHelper paginationParams)
+    {
+        return GetAllWithoutDeleted().Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize).Take(paginationParams.PageSize);
     }
 
     public IQueryable<Entity> GetAll()

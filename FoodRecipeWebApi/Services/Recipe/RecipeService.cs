@@ -15,12 +15,20 @@ namespace FoodRecipeWebApi.Services.Recipes
         private readonly ImageHelper imageHelper = imageHelper;
         private readonly ICategoryService categoryService = categoryService;
         private readonly IFavouriteService favouriteService = favService;
+
         public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetAllRecipes()
         {
             var recipes = repository.GetAllWithoutDeleted();
             var data = recipes.ProjectTo<GetRecipeViewModel>();
             return new(200, data, "Process Success");
         }
+        public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetRecipesByPage(PaginationHelper paginationParams)
+        {
+            var recipes = repository.GetByPage(paginationParams);
+            var data = recipes.ProjectTo<GetRecipeViewModel>();
+            return new(200, data, "Process Success");
+        }
+
         public ApiResponseViewModel<GetRecipeViewModel> GetRecipeDetails(int id)
         {
             var recipe = repository.GetByID(id);

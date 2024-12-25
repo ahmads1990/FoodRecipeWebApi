@@ -1,4 +1,5 @@
-﻿using FoodRecipeWebApi.Models;
+﻿using FoodRecipeWebApi.Helpers;
+using FoodRecipeWebApi.Models;
 using System.Linq.Expressions;
 namespace FoodRecipeWebApi.Data.Repo;
 
@@ -6,6 +7,7 @@ public interface IRepository<Entity> where Entity : BaseModel
 {
     IQueryable<Entity> GetAll();
     IQueryable<Entity> GetAllWithoutDeleted();
+    IQueryable<Entity> GetByPage(PaginationHelper paginationParams);
     IQueryable<Entity> GetByCondition(Expression<Func<Entity, bool>> expression);
     Task<Entity?> GetByIDAsync(int id);
     Entity? GetByID(int id);

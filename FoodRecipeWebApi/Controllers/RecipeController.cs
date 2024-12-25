@@ -1,4 +1,5 @@
-﻿using FoodRecipeWebApi.Services.Recipes;
+﻿using FoodRecipeWebApi.Helpers;
+using FoodRecipeWebApi.Services.Recipes;
 using FoodRecipeWebApi.ViewModels;
 using FoodRecipeWebApi.ViewModels.RecipeViewModel;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,11 @@ namespace FoodRecipeWebApi.Controllers
         public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetAll()
         {
             return recipeServices.GetAllRecipes();
+        }
+        [HttpGet("GetRecipesByPage")]
+        public ApiResponseViewModel<IQueryable<GetRecipeViewModel>> GetRecipesByPage(PaginationHelper paginationParams)
+        {
+            return recipeServices.GetRecipesByPage(paginationParams);
         }
         [HttpGet("GetlRecipeDetails/{id:int}")]
         public ApiResponseViewModel<GetRecipeViewModel> GetRecipeDetails(int id)
@@ -38,7 +44,7 @@ namespace FoodRecipeWebApi.Controllers
                 return new(400, ModelState);
             }
         }
-        [HttpDelete("DeleteRecipe/{id:int}")]
+        [HttpPut("DeleteRecipe/{id:int}")]
         public ApiResponseViewModel<bool> DeleteRecipe(int id)
         {
             return recipeServices.DeleteRecipe(id);
@@ -53,11 +59,6 @@ namespace FoodRecipeWebApi.Controllers
             return new(400, ModelState);
         }
 
-        [HttpPut("DeleteFromFavourites/{id:int}")]
-        public ApiResponseViewModel<bool> DeleteFromFavourites(int id)
-        {
-            var response = recipeServices.DeleteRecipeFromFavourites(id);
-            return response;
-        }
+       
     }
 }
